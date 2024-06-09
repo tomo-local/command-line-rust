@@ -1,13 +1,19 @@
 # Compiled files
 */target
+debug
 
 # Dependency directories
 Cargo.lock
 Cargo.toml.orig
 Cargo.toml.bkp
 
+
 # Build artifacts
 *.rs.bk
+*.swp
+*.py
+**/*.rs.bk
+
 
 # Editor-specific files
 .vscode/

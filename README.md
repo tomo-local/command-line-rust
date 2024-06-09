@@ -2,7 +2,7 @@
 
 | Task | Status |
 |------|--------|
-| 01_hello_world | |
+| 01_hello_world | ✅ |
 | 02_echor | |
 | 03_catr | |
 | 04_header | |

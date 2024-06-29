@@ -9,7 +9,24 @@ pub fn run(config: Config) -> MyResult<()> {
     for filename in config.files {
         match open(&filename){
             Err(e) => eprintln!("{}: {}", filename, e),
-            Ok(_) => println!("{}: OK", filename),
+            Ok(mut file) => {
+                let mut line = String::new();
+                let mut line_number = 0;
+
+                while file.read_line(&mut line)? > 0 {
+
+                    if config.number_lines {
+                        line_number += 1;
+                        print!("{:6}\t{}",line_number, line);
+                    }else if config.number_nonblank && !line.trim().is_empty() {
+                        line_number += 1;
+                        print!("{:6}\t{}", line_number, line);
+                    } else {
+                        print!("{}", line);
+                    }
+                    line.clear();
+                }
+            },
         }
     }
     Ok(())
@@ -22,7 +39,7 @@ pub struct Config {
     #[allow(dead_code)]
     number_lines: bool,
     #[allow(dead_code)]
-    number_nonblank_lines: bool,
+    number_nonblank: bool,
 }
 
 pub fn get_args() -> MyResult<Config> {
@@ -48,12 +65,13 @@ pub fn get_args() -> MyResult<Config> {
             .long("number-nonblank")
             .help("Number nonblank lines")
             .takes_value(false)
-        ).get_matches();
+        ).usage("Usage: catr [options] [file ...]")
+        .get_matches();
 
         Ok(Config {
             files: matches.values_of_lossy("files").unwrap(),
             number_lines: matches.is_present("number_lines"),
-            number_nonblank_lines: matches.is_present("number_nonblank"),
+            number_nonblank: matches.is_present("number_nonblank"),
         })
 }
 
